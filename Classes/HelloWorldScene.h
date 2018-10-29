@@ -33,12 +33,27 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-    
+	virtual void update(float delta);
+
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+
+	// onKeyPress
+	void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+	void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
+	void onMouseMove(cocos2d::Event* event);
+	void onMouseDown(cocos2d::Event* event);
+	void onMouseUp(cocos2d::Event* event);
+	void onMouseScroll(cocos2d::Event* event);
+
+
+private:
+	bool m_moveRight;
+	bool m_moveLeft;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
