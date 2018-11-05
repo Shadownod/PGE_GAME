@@ -85,7 +85,7 @@ bool HelloWorld::init()
 	auto spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 	
-	auto mainSprite = Sprite::create("Blue_Front1.png");
+	mainSprite = Sprite::create("Blue_Front1.png");
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
 	mainSprite->setName("mainSprite");
@@ -103,6 +103,9 @@ bool HelloWorld::init()
 	//auto sequence = Sequence::create(moveEvent, moveEvent->reverse(), delaySequence, nullptr);
 	//mainSprite->runAction(sequence);
 
+	/*****************************
+	* Keyboard & Mouse Listeners *
+	******************************/
 	auto KBlistener = EventListenerKeyboard::create();	
 	KBlistener->onKeyPressed  = CC_CALLBACK_2(HelloWorld::onKeyPressed,	 this);
 	KBlistener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
@@ -115,11 +118,69 @@ bool HelloWorld::init()
 	Mlistener->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(Mlistener, this);
 
+	/*****************************
+	* Animation *
+	******************************/
+	Vector<SpriteFrame*> animRightFrame;
+	animRightFrame.reserve(4);
+	animRightFrame.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
+	animRightFrame.pushBack(SpriteFrame::create("Blue_Right3.png", Rect(0, 0, 65, 81)));
+	animRightFrame.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
+	animRightFrame.pushBack(SpriteFrame::create("Blue_Right2.png", Rect(0, 0, 65, 81)));
+
+	Vector<SpriteFrame*> animLeftFrame;
+	animLeftFrame.reserve(4);
+	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
+	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left3.png", Rect(0, 0, 65, 81)));
+	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
+	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left2.png", Rect(0, 0, 65, 81)));
+
+	Vector<SpriteFrame*> animUpFrame;
+	animUpFrame.reserve(4);
+	animUpFrame.pushBack(SpriteFrame::create("Blue_Back1.png", Rect(0, 0, 65, 81)));
+	animUpFrame.pushBack(SpriteFrame::create("Blue_Back3.png", Rect(0, 0, 65, 81)));
+	animUpFrame.pushBack(SpriteFrame::create("Blue_Back1.png", Rect(0, 0, 65, 81)));
+	animUpFrame.pushBack(SpriteFrame::create("Blue_Back2.png", Rect(0, 0, 65, 81)));
+	
+	Vector<SpriteFrame*> animDownFrames;
+	animDownFrames.reserve(4);
+	animDownFrames.pushBack(SpriteFrame::create("Blue_Front1.png", Rect(0, 0, 65, 81)));
+	animDownFrames.pushBack(SpriteFrame::create("Blue_Front3.png", Rect(0, 0, 65, 81)));
+	animDownFrames.pushBack(SpriteFrame::create("Blue_Front1.png", Rect(0, 0, 65, 81)));
+	animDownFrames.pushBack(SpriteFrame::create("Blue_Front2.png", Rect(0, 0, 65, 81)));
+
+	//create animation out of the frames
+	Animation* playerAnimation = Animation::createWithSpriteFrames(animRightFrame, 0.5f);
+	animateRight = Animate::create(playerAnimation);
+	animateRight->retain();
+
+	playerAnimation = Animation::createWithSpriteFrames(animLeftFrame, 0.5f);
+	animateLeft = Animate::create(playerAnimation);
+	animateLeft->retain();
+
+	playerAnimation = Animation::createWithSpriteFrames(animUpFrame, 0.5f);
+	animateUp = Animate::create(playerAnimation);
+	animateUp->retain();
+
+	playerAnimation = Animation::createWithSpriteFrames(animDownFrames, 0.5f);
+	animateDown = Animate::create(playerAnimation);
+	animateDown->retain();
+
+	//Tell system that this "node"(scene) has a update
 	this->scheduleUpdate();
 
+	/*****************************
 	//Class member initializer
-	m_moveLeft = false;
+	******************************/
+	m_moveLeft	= false;
 	m_moveRight = false;
+	m_moveUp	= false;
+	m_moveDown	= false;
+
+	m_animRight = false;
+	m_animLeft	= false;
+	m_animUp	= false;
+	m_animDown	= false;
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -204,6 +265,20 @@ void HelloWorld::update(float delta)
 		curSprite->runAction(moveEvent);
 	}
 
+	if (m_moveUp)
+	{
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		auto moveEvent = MoveBy::create(0.0f, Vec2(0.f, 1.f));
+		curSprite->runAction(moveEvent);
+	}
+
+	if (m_moveDown)
+	{
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		auto moveEvent = MoveBy::create(0.0f, Vec2(0.f, -1.f));
+		curSprite->runAction(moveEvent);
+	}
+
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
@@ -227,11 +302,43 @@ void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
+		if (!m_animRight)
+		{
+			m_animRight = true;
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			curSprite->runAction(RepeatForever::create(animateRight)->clone());
+		}
 		m_moveRight = true;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
+		if (!m_animLeft)
+		{
+			m_animLeft = true;
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			curSprite->runAction(RepeatForever::create(animateLeft)->clone());
+		}
 		m_moveLeft = true;
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+	{
+		if (!m_animUp)
+		{
+			m_animUp = true;
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			curSprite->runAction(RepeatForever::create(animateUp)->clone());
+		}
+		m_moveUp = true;
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+	{
+		if (!m_animDown)
+		{
+			m_animDown = true;
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			curSprite->runAction(RepeatForever::create(animateDown)->clone());
+		}
+		m_moveDown = true;
 	}
 
 }
@@ -241,10 +348,30 @@ void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d:
 	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
 		m_moveRight = false;
+		m_animRight = false;
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		curSprite->stopAllActions();
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
 		m_moveLeft = false;
+		m_animLeft = false;
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		curSprite->stopAllActions();
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+	{
+		m_moveUp = false;
+		m_animUp = false;
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		curSprite->stopAllActions();
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+	{
+		m_moveDown = false;
+		m_animDown = false;
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		curSprite->stopAllActions();
 	}
 
 }
@@ -263,13 +390,26 @@ void HelloWorld::onMouseUp(cocos2d::Event * event)
 	if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
 	{
 		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto stopEvent = curSprite->getActionByTag(1337);
-		curSprite->stopAction(stopEvent);
+		//auto stopEvent = curSprite->getActionByTag(1337);
+		curSprite->stopAllActions();
 
 		curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveTo::create(0.5f, Vec2(e->getCursorX(), e->getCursorY()));
-		moveEvent->setTag(1337);
-		curSprite->runAction(moveEvent);
+		auto moveEvent = MoveTo::create(5.f, Vec2(e->getCursorX(), e->getCursorY()));
+		//moveEvent->setTag(1337);
+		
+		//lamda function to stop all action
+		auto callbackStop = CallFunc::create([]()
+		{
+			auto scene = Director::getInstance()->getRunningScene();
+			HelloWorld* helscene = (HelloWorld*)scene;
+			auto curSprite = helscene->getPlayerSprite();
+			curSprite->stopAllActions();
+		});
+
+		curSprite->runAction(RepeatForever::create(animateUp));
+		auto sq = Sequence::create(moveEvent, callbackStop, animateDown, nullptr);
+		curSprite->runAction(sq);
+
 	}
 
 }
