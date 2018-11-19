@@ -49,6 +49,12 @@ bool HelloWorld::init()
         return false;
     }
 
+	if (!Scene::initWithPhysics())
+	{
+		return false;
+	}
+
+	getPhysicsWorld()->setDebugDrawMask(0xffff);
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	
@@ -70,13 +76,23 @@ bool HelloWorld::init()
 
 	int howmany = playingSize.width / sprite->getContentSize().width;
 	int SpawnX = 0;
-	int SpawnY = playingSize.height / 2;
+	int SpawnY = playingSize.height / 10;
 
 	for (int i = 0; i < howmany; i++)
 	{
 		auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
 		sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
 		sprite->setPosition(SpawnX + i * sprite->getContentSize().width, SpawnY);
+
+		//Create a static PhysicsBody
+		auto physicsBody = PhysicsBody::createBox(
+			Size(sprite->getContentSize().width, sprite->getContentSize().height),
+			PhysicsMaterial(0.1f, 1.0f, 0.0f));
+		physicsBody->setDynamic(false);
+		physicsBody->setCategoryBitmask(0x02);
+		physicsBody->setCollisionBitmask(0x01);
+		sprite->addComponent(physicsBody);
+
 		nodeItems->addChild(sprite, 0);
 	}
 	this->addChild(nodeItems, 1);
@@ -90,6 +106,13 @@ bool HelloWorld::init()
 	mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
 	mainSprite->setName("mainSprite");
 	
+	auto mainSpritePhysicsBody = PhysicsBody::createBox(
+		Size(sprite->getContentSize().width, sprite->getContentSize().height),
+		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	mainSpritePhysicsBody->setCategoryBitmask(0x01);
+	mainSpritePhysicsBody->setCollisionBitmask(0x02);
+	mainSprite->addComponent(mainSpritePhysicsBody);
+
 	spriteNode->addChild(mainSprite, 1);
 	this->addChild(spriteNode, 1);
 
@@ -117,6 +140,13 @@ bool HelloWorld::init()
 	Mlistener->onMouseUp	 = CC_CALLBACK_1(HelloWorld::onMouseUp,		this);
 	Mlistener->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(Mlistener, this);
+
+	/*****************************
+	* Contact event Listener *
+	******************************/
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
 	/*****************************
 	* Animation *
@@ -253,30 +283,18 @@ void HelloWorld::update(float delta)
 {
 	if (m_moveRight)
 	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveBy::create(0.0f, Vec2(1.0f, 0.f));
-		curSprite->runAction(moveEvent);
 	}
 
 	if (m_moveLeft)
 	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveBy::create(0.0f, Vec2(-1.0f, 0.f));
-		curSprite->runAction(moveEvent);
 	}
 
 	if (m_moveUp)
 	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveBy::create(0.0f, Vec2(0.f, 1.f));
-		curSprite->runAction(moveEvent);
 	}
 
 	if (m_moveDown)
 	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveBy::create(0.0f, Vec2(0.f, -1.f));
-		curSprite->runAction(moveEvent);
 	}
 
 }
@@ -302,43 +320,75 @@ void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
+		if (!m_moveRight)
+		{
+			m_moveRight = true;
+
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+			curPhysics->setVelocity(Vec2(100.f, 0.f));
+		}
 		if (!m_animRight)
 		{
-			m_animRight = true;
+			m_animRight = true;		
+
 			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
 			curSprite->runAction(RepeatForever::create(animateRight)->clone());
 		}
-		m_moveRight = true;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
+		if (!m_moveLeft)
+		{
+			m_moveLeft = true;
+
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+			curPhysics->setVelocity(Vec2(-100.f, 0.f));
+		}
 		if (!m_animLeft)
 		{
 			m_animLeft = true;
+			
 			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
 			curSprite->runAction(RepeatForever::create(animateLeft)->clone());
 		}
-		m_moveLeft = true;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
 	{
+		if (!m_moveUp)
+		{
+			m_moveUp = true;
+
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+			curPhysics->setVelocity(Vec2(0.f, 100.f));
+		}
 		if (!m_animUp)
 		{
 			m_animUp = true;
+
 			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
 			curSprite->runAction(RepeatForever::create(animateUp)->clone());
 		}
-		m_moveUp = true;
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
 	{
+		if (!m_moveDown)
+		{
+			m_moveDown = true;
+			
+			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+			curPhysics->setVelocity(Vec2(0.f, -100.f));
+		}
 		if (!m_animDown)
 		{
 			m_animDown = true;
+			
 			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
 			curSprite->runAction(RepeatForever::create(animateDown)->clone());
 		}
-		m_moveDown = true;
 	}
 
 }
@@ -347,31 +397,43 @@ void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d:
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+		curPhysics->setVelocity(Vec2::ZERO);
+		curSprite->stopAllActions();
+
 		m_moveRight = false;
 		m_animRight = false;
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		curSprite->stopAllActions();
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+		curPhysics->setVelocity(Vec2::ZERO);
+		curSprite->stopAllActions();
+
 		m_moveLeft = false;
 		m_animLeft = false;
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		curSprite->stopAllActions();
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
 	{
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+		curPhysics->setVelocity(Vec2::ZERO);
+		curSprite->stopAllActions();
+
 		m_moveUp = false;
 		m_animUp = false;
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		curSprite->stopAllActions();
 	}
 	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
 	{
+		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
+		curPhysics->setVelocity(Vec2::ZERO);
+		curSprite->stopAllActions();
+
 		m_moveDown = false;
 		m_animDown = false;
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		curSprite->stopAllActions();
 	}
 
 }
@@ -416,4 +478,11 @@ void HelloWorld::onMouseUp(cocos2d::Event * event)
 
 void HelloWorld::onMouseScroll(cocos2d::Event * event)
 {
+}
+
+bool HelloWorld::onContactBegin(cocos2d::PhysicsContact & contact)
+{
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+	return true;
 }

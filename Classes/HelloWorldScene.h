@@ -50,6 +50,9 @@ public:
 	void onMouseUp(cocos2d::Event* event);
 	void onMouseScroll(cocos2d::Event* event);
 
+	// Physics listener
+	bool onContactBegin(cocos2d::PhysicsContact& contact);
+
 	cocos2d::Sprite* getPlayerSprite()
 	{	return mainSprite;	};
 
