@@ -3,6 +3,7 @@
 
 class CRoomCoordinate
 {
+public:
 	int x;
 	int y;
 
@@ -12,10 +13,10 @@ class CRoomCoordinate
 		y = _y;
 	}
 
-	CRoomCoordinate(const CRoomCoordinate &_mirror)
+	CRoomCoordinate(const CRoomCoordinate*_mirror)
 	{
-		x = _mirror.x;
-		y = _mirror.y;
+		x = _mirror->x;
+		y = _mirror->y;
 	}
 
 	void setCoordinate(int _x, int _y)
@@ -28,6 +29,11 @@ class CRoomCoordinate
 /******************
  * General Codes
  ******************/
+
+enum TileType
+{
+	None, Wall, Floor
+};
 
 enum Direction
 {
