@@ -106,7 +106,7 @@ void CBoardGenerator::InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoo
 {
 	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
 	sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
-	sprite->setPosition(xCoord * sprite->getContentSize().width, yCoord);
+	sprite->setPosition(xCoord * sprite->getContentSize().width, yCoord * sprite->getContentSize().height);
 
 	//Create a static PhysicsBody
 	auto physicsBody = cocos2d::PhysicsBody::createBox(
