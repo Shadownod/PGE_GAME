@@ -1,8 +1,18 @@
 #include "CRoom.h"
+#include "CCorridor.h"
+#include "CDungeonUtilities.h"
 
 #include <cocos2d.h>
 #include <spine/spine-cocos2dx.h>
 USING_NS_CC;
+
+CRoom::CRoom()
+{
+}
+
+CRoom::~CRoom()
+{
+}
 
 int CRoom::SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _roomHeight, int _corridorLength, CRoomCoordinate* _startingCoord,
 	int _maxRooms, vector<vector<bool>> &_gameBoard, vector<CRoom*> &_rooms, vector<CCorridor*> &_corridors)
@@ -36,7 +46,7 @@ int CRoom::SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _
 		{
 		case Direction::NORTH:
 			//if the next room will be out of board
-			if (coordinate->y + 1 < _gameBoard[0].size)
+			if (coordinate->y + 1 < _gameBoard[0].size())
 				if (!_gameBoard[coordinate->x][coordinate->y + 1])
 					break;
 			continue;
@@ -46,7 +56,7 @@ int CRoom::SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _
 					break;
 			continue;
 		case Direction::EAST:
-			if (coordinate->x + 1 < _gameBoard.size)
+			if (coordinate->x + 1 < _gameBoard.size())
 				if (!_gameBoard[coordinate->x + 1][coordinate->y])
 					break;
 			continue;
@@ -63,12 +73,12 @@ int CRoom::SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _
 		nextCorridors.push_back(newCor);
 	}
 
-	int availableRooms = nextCorridors.size;
+	int availableRooms = nextCorridors.size();
 
 	// Create Next Room
 	CRoomCoordinate* nextRoomCoord = new CRoomCoordinate(0, 0);
 
-	for (int i = 0; i < nextCorridors.size; ++i)
+	for (int i = 0; i < nextCorridors.size(); ++i)
 	{
 		//if direction have a room alrdy base on the _gameboard, skip
 		//if direction is same as previous corridor / corridors in list, skip
@@ -132,13 +142,13 @@ int CRoom::SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _
 
 void CRoom::SetupRoom(int _width, int _height, CRoomCoordinate* _roomCoordinate, CCorridor* _prevCorridor,
 	int &_numRooms, int &_availableRooms, int &_maxRooms, vector<vector<bool>> &_gameBoard, vector<CRoom*> &_rooms, vector<CCorridor*> &_corridors,
-	int _depth, bool _ignoreDepth = false)
+	int _depth, bool _ignoreDepth)
 {
 	//Return Mechanic / Safety
-	if (_roomCoordinate->x >= _gameBoard.size)
+	if (_roomCoordinate->x >= _gameBoard.size())
 		return;
 
-	if (_roomCoordinate->y >= _gameBoard[0].size)
+	if (_roomCoordinate->y >= _gameBoard[0].size())
 		return;
 
 	if (_gameBoard[_roomCoordinate->x][_roomCoordinate->y])
@@ -214,7 +224,7 @@ void CRoom::SetupRoom(int _width, int _height, CRoomCoordinate* _roomCoordinate,
 				{
 				case Direction::NORTH:
 					//if the next room will be out of board
-					if (coordinate->y + 1 < _gameBoard[0].size)
+					if (coordinate->y + 1 < _gameBoard[0].size())
 						if (!_gameBoard[coordinate->x][coordinate->y + 1])
 							break;
 					continue;
@@ -224,7 +234,7 @@ void CRoom::SetupRoom(int _width, int _height, CRoomCoordinate* _roomCoordinate,
 							break;
 					continue;
 				case Direction::EAST:
-					if (coordinate->x + 1 < _gameBoard.size)
+					if (coordinate->x + 1 < _gameBoard.size())
 						if (!_gameBoard[coordinate->x + 1][coordinate->y])
 							break;
 					continue;
@@ -244,15 +254,15 @@ void CRoom::SetupRoom(int _width, int _height, CRoomCoordinate* _roomCoordinate,
 	}
 
 	// Create 1 End Room
-	if (nextCorridors.size <= 0)
+	if (nextCorridors.size() <= 0)
 		return;
 
-	_availableRooms += nextCorridors.size;
+	_availableRooms += nextCorridors.size();
 
 	// Create Next Room
 	CRoomCoordinate* nextRoomCoord = new CRoomCoordinate(0, 0);
 
-	for (int i = 0; i < nextCorridors.size; ++i)
+	for (int i = 0; i < nextCorridors.size(); ++i)
 	{
 		//if direction have a room alrdy base on the _gameboard, skip
 		switch (nextCorridors[i]->direction)
@@ -311,11 +321,11 @@ vector<CRoom*> CRoom::GetEndRooms(vector<CRoom*> _rooms, int _depth)
 {
 	//Get all room with the same finalDepth
 	vector<CRoom*> endRooms;
-	for (int i = 0; i < _rooms.size; ++i)
+	for (int i = 0; i < _rooms.size(); ++i)
 	{
 		if (_rooms[i]->roomDepth >= _depth)
 		{
-			if (_rooms[i]->nextCorridors.size <= 0)
+			if (_rooms[i]->nextCorridors.size() <= 0)
 				endRooms.push_back(_rooms[i]);
 		}
 	}
@@ -327,9 +337,9 @@ vector<CRoom*> CRoom::GetEndRooms(vector<CRoom*> _rooms, int _depth)
 void CRoom::CreateEndRooms(int _width, int _height, int _corridorLength, vector<CRoom*> _endRooms,
 	int &_numRooms, int &_availableRooms, int &_maxRooms, vector<vector<bool>> &_gameBoard, vector<CRoom*> &_rooms, vector<CCorridor*> &_corridors)
 {
-	for (int i = 0; i < _endRooms.size; ++i)
+	for (int i = 0; i < _endRooms.size(); ++i)
 	{
-		if (_endRooms[i]->nextCorridors.size > 0)
+		if (_endRooms[i]->nextCorridors.size() > 0)
 			continue;
 
 		_endRooms[i]->SetupEndRoom(_width, _height, _corridorLength, _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors);
@@ -343,7 +353,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 	int &_numRooms, int &_availableRooms, int &_maxRooms, vector<vector<bool>> &_gameBoard, vector<CRoom*> &_rooms, vector<CCorridor*> &_corridors)
 {
 	//Safety measures
-	if (nextCorridors.size > 0)
+	if (nextCorridors.size() > 0)
 		return;
 
 	//Create Corridors
@@ -361,7 +371,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 				{
 				case Direction::NORTH:
 					//if the next room will be out of board
-					if (coordinate->y + 1 >= _gameBoard[0].size)
+					if (coordinate->y + 1 >= _gameBoard[0].size())
 						continue;
 					//if corridor has a room already?
 					if (_gameBoard[coordinate->x][coordinate->y + 1])
@@ -374,7 +384,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 						continue;
 					break;
 				case Direction::EAST:
-					if (coordinate->x + 1 >= _gameBoard.size)
+					if (coordinate->x + 1 >= _gameBoard.size())
 						continue;
 					if (_gameBoard[coordinate->x + 1][coordinate->y])
 						continue;
@@ -396,15 +406,15 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 	}
 
 	// Create 1 End Room
-	if (nextCorridors.size <= 0)
+	if (nextCorridors.size() <= 0)
 		return;
 
-	_availableRooms += nextCorridors.size;
+	_availableRooms += nextCorridors.size();
 
 	// Create Next Room
 	CRoomCoordinate* nextRoomCoord = new CRoomCoordinate(0, 0);
 
-	for (int i = 0; i < nextCorridors.size; ++i)
+	for (int i = 0; i < nextCorridors.size(); ++i)
 	{
 		//if direction have a room alrdy base on the _gameboard, skip
 		switch (nextCorridors[i]->direction)
@@ -416,7 +426,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 				CRoom* newRoom = new CRoom();
 				nextRoomCoord->setCoordinate(coordinate->x, coordinate->y + 1);
 				_rooms.push_back(newRoom);
-				nextRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
+				newRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
 			}
 			break;
 
@@ -427,7 +437,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 				CRoom* newRoom = new CRoom();
 				nextRoomCoord->setCoordinate(coordinate->x + 1, coordinate->y);
 				_rooms.push_back(newRoom);
-				nextRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
+				newRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
 			}
 			break;
 
@@ -438,7 +448,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 				CRoom* newRoom = new CRoom();
 				nextRoomCoord->setCoordinate(coordinate->x - 1, coordinate->y);
 				_rooms.push_back(newRoom);
-				nextRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
+				newRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
 			}
 			break;
 
@@ -449,7 +459,7 @@ void CRoom::SetupEndRoom(int _width, int _height, int _corridorLength,
 				CRoom* newRoom = new CRoom();
 				nextRoomCoord->setCoordinate(coordinate->x, coordinate->y - 1);
 				_rooms.push_back(newRoom);
-				nextRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
+				newRoom->SetupRoom(_width, _height, nextRoomCoord, nextCorridors[i], _numRooms, _availableRooms, _maxRooms, _gameBoard, _rooms, _corridors, roomDepth, true);
 			}
 			break;
 		}

@@ -1,14 +1,14 @@
 #ifndef CFLOOR_H
 #define CFLOOR_H
 
-#include "CCorridor.h"
-#include "CRoom.h"
-#include "CDungeonUtilities.h"
-
 #include <vector>
 using std::vector;
 #include <string>
 using std::string;
+
+class CRoom;
+class CCorridor;
+#include "CDungeonUtilities.h"
 
 class CFloor
 {

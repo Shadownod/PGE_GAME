@@ -1,10 +1,12 @@
 #ifndef CROOM_H
 #define CROOM_H
 
-#include "CCorridor.h"
-
 #include <vector>
 using std::vector;
+
+class CCorridor;
+class CRoomCoordinate;
+enum Direction;
 
 class CRoom
 {
@@ -20,10 +22,13 @@ public:
 	Direction prevCorridor;         // The direction of the corridor that is entering this room.
 	vector<CCorridor*> nextCorridors;   // The dir of the other corridors
 	CRoomCoordinate* coordinate;
-	
+
+	CRoom();
+	~CRoom();
+
 	int SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _roomHeight, int _corridorLength, CRoomCoordinate* _startingCoord,
 		int _maxRooms, vector<vector<bool>> &_gameBoard, vector<CRoom*> &_rooms, vector<CCorridor*> &_corridors);
-	
+
 private:
 	vector<CRoom*> GetEndRooms(vector<CRoom*> _rooms, int _depth);
 

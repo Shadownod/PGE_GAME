@@ -1,5 +1,8 @@
 #include "CFloor.h"
 
+#include "CRoom.h"
+#include "CCorridor.h"
+
 void CFloor::InitNewLevel(int _columns, int _rows, int _numRooms, int _gridSize, int _roomWidth, int _roomHeight, int _corridorLength)
 {
 	columns = _columns;
@@ -57,7 +60,7 @@ void CFloor::CreateRoomsAndCorridors(int _numRooms, int _roomWidth, int _roomHei
 	corridors.clear();
 
 	// Create the first room and corridor.
-	CRoom* firstRoom;
+	CRoom* firstRoom = new CRoom();
 	rooms.push_back(firstRoom);
 	// Setup the first room, RMCount will start from 0
 	int totalRooms = firstRoom->SetupAllRoom(columns, rows, _roomWidth, _roomHeight, _corridorLength, StartingRoom,
@@ -67,9 +70,9 @@ void CFloor::CreateRoomsAndCorridors(int _numRooms, int _roomWidth, int _roomHei
 void CFloor::SetTilesValuesForRooms()
 {
 	// Go through all the rooms...
-	for (int i = 0; i < rooms.size; ++i)
+	for (int i = 0; i < rooms.size(); ++i)
 	{
-		for (int i = 0; i < rooms.size; ++i)
+		for (int i = 0; i < rooms.size(); ++i)
 		{
 			CRoom* currentRoom = rooms[i];
 			if (!currentRoom->generated)
@@ -120,7 +123,7 @@ void CFloor::SetTilesValuesForRooms()
 void CFloor::SetTilesValuesForCorridors()
 {
 	// Go through every corridor...
-	for (int i = 0; i < corridors.size; ++i)
+	for (int i = 0; i < corridors.size(); ++i)
 	{
 		CCorridor* currentCorridor = corridors[i];
 

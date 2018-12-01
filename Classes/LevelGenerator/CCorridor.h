@@ -2,6 +2,8 @@
 #define CCORRIDOR_H
 #include "CDungeonUtilities.h"
 
+class CRoom;
+
 class CCorridor
 {
 public:
