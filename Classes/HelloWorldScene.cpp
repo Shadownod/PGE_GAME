@@ -27,6 +27,8 @@
 
 USING_NS_CC;
 
+#include "LevelGenerator/CBoardGenerator.h"
+
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
@@ -63,39 +65,47 @@ bool HelloWorld::init()
 	********************************/
 	//Set playing size which "splits" the playing area away from the setted area, 
 	//anything that go above the playingSize will not appear on the screen
-	Size playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
+	cocos2d::Size playingSize = cocos2d::Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
 
 	// "auto" automatically assigns the variable type when the variable is initialised.
 
+	//***************
 	//Floor Render
+	//***************
+#pragma region GameBoardGeneration
+
 	auto nodeItems = Node::create();
-	nodeItems->setName("nodeItems");
+	nodeItems->setName("gameBoard");
 	nodeItems->setPosition(0, -50); // move the container together with all the items in it
 
-	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-
-	int howmany = playingSize.width / sprite->getContentSize().width;
-	int SpawnX = 0;
-	int SpawnY = playingSize.height / 10;
-
-	for (int i = 0; i < howmany; i++)
-	{
-		auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-		sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
-		sprite->setPosition(SpawnX + i * sprite->getContentSize().width, SpawnY);
-
-		//Create a static PhysicsBody
-		auto physicsBody = PhysicsBody::createBox(
-			Size(sprite->getContentSize().width, sprite->getContentSize().height),
-			PhysicsMaterial(0.1f, 1.0f, 0.0f));
-		physicsBody->setDynamic(false);
-		physicsBody->setCategoryBitmask(0x02);
-		physicsBody->setCollisionBitmask(0x01);
-		sprite->addComponent(physicsBody);
-
-		nodeItems->addChild(sprite, 0);
-	}
+	m_gameBoard = new CBoardGenerator(10, 7, 7, 4, 100, 100);
+	m_gameBoard->GenerateBoard(nodeItems);
+	//auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
+	//
+	//int howmany = playingSize.width / sprite->getContentSize().width;
+	//int SpawnX = 0;
+	//int SpawnY = playingSize.height / 10;
+	//
+	//for (int i = 0; i < howmany; i++)
+	//{
+	//	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
+	//	sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
+	//	sprite->setPosition(SpawnX + i * sprite->getContentSize().width, SpawnY);
+	//
+	//	//Create a static PhysicsBody
+	//	auto physicsBody = PhysicsBody::createBox(
+	//		cocos2d::Size(sprite->getContentSize().width, sprite->getContentSize().height),
+	//		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	//	physicsBody->setDynamic(false);
+	//	physicsBody->setCategoryBitmask(0x02);
+	//	physicsBody->setCollisionBitmask(0x01);
+	//	sprite->addComponent(physicsBody);
+	//
+	//	nodeItems->addChild(sprite, 0);
+	//}
 	this->addChild(nodeItems, 1);
+
+#pragma endregion
 
 	//Movable obj
 	auto spriteNode = Node::create();
@@ -107,7 +117,7 @@ bool HelloWorld::init()
 	mainSprite->setName("mainSprite");
 	
 	auto mainSpritePhysicsBody = PhysicsBody::createBox(
-		Size(sprite->getContentSize().width, sprite->getContentSize().height),
+		cocos2d::Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
 	mainSpritePhysicsBody->setCategoryBitmask(0x01);
 	mainSpritePhysicsBody->setCollisionBitmask(0x02);

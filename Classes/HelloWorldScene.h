@@ -27,6 +27,8 @@
 
 #include "cocos2d.h"
 
+class CBoardGenerator;
+
 class HelloWorld : public cocos2d::Scene
 {
 public:
@@ -76,6 +78,10 @@ private:
 	cocos2d::Animate* animateRight;
 	cocos2d::Animate* animateLeft;
 	cocos2d::Animate* animateUp;
+
+
+	//Gameboard
+	CBoardGenerator* m_gameBoard;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
