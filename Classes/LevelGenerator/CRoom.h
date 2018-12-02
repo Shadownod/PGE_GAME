@@ -29,6 +29,12 @@ public:
 	int SetupAllRoom(int _boardWidth, int _boardHeight, int _roomWidth, int _roomHeight, int _corridorLength, CRoomCoordinate* _startingCoord,
 		int _maxRooms, vector<vector<bool>> &_gameBoard, vector<CRoom*> &_rooms, vector<CCorridor*> &_corridors);
 
+	cocos2d::Vec2 CenterPoint()
+	{
+		return cocos2d::Vec2(xPos + roomWidth * 0.5f, yPos + roomHeight * 0.5f);
+	}
+
+
 private:
 	vector<CRoom*> GetEndRooms(vector<CRoom*> _rooms, int _depth);
 

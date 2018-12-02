@@ -8,6 +8,8 @@ using std::vector;
 
 #include "CDungeonUtilities.h"
 
+class Player;
+
 class CBoardGenerator
 {
 public:
@@ -22,6 +24,8 @@ private:
 	void InstantiateTiles(cocos2d::Node* _sceneFloorData, vector<vector<TileType>> _tiles);
 	void InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoord, float yCoord);
 
+	void SpawnPlayer(Player* _player, int _whichRoom = 0);
+
 	int gridSize;
 
 	int rooms;
@@ -34,6 +38,7 @@ private:
 	int numFloors;
 	int currFloor;
 
+	cocos2d::Sprite* wallSprite;
 };
 
 #endif
