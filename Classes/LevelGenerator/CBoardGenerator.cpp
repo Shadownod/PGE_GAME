@@ -14,6 +14,7 @@ CBoardGenerator::CBoardGenerator(int _numRooms, int _roomWidth, int _roomHeight,
 	, rows(_boardRow)
 {
 	numFloors = 100;
+	wallSprite = Sprite::create("ZigzagGrass_Mud_Round.png");
 }
 
 CBoardGenerator::~CBoardGenerator()
@@ -104,7 +105,7 @@ USING_NS_CC;
 
 void CBoardGenerator::InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoord, float yCoord)
 {
-	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
+	auto sprite = wallSprite;
 	sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
 	sprite->setPosition(xCoord * sprite->getContentSize().width, yCoord * sprite->getContentSize().height);
 
@@ -119,3 +120,12 @@ void CBoardGenerator::InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoo
 
 	_sceneFloorData->addChild(sprite, 0);
 }
+
+void CBoardGenerator::SpawnPlayer(Player* _player, int _whichRoom)
+{
+	cocos2d::Vec2 roomCenterPoint = CDungeon::getInstance()->floors[CDungeon::getInstance()->currentFloor - 1]->GetRooms()[_whichRoom]->CenterPoint();
+	//_player->GetSprite ? ->GetPosition ? = the line below
+	Vec2(roomCenterPoint.x * wallSprite->getContentSize().width, roomCenterPoint.y * wallSprite->getContentSize().height);
+	
+}
+
