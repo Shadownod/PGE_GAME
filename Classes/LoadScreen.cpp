@@ -23,8 +23,8 @@
  ****************************************************************************/
 
 #include "LoadScreen.h"
-#include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "SceneManager.h"
 
 USING_NS_CC;
 
@@ -77,10 +77,11 @@ bool LoadScreen::init()
 
 void LoadScreen::update(float delta)
 {
-	auto scene = HelloWorld::createScene();
-	auto director = Director::getInstance();
-	return director->replaceScene(scene);
+	//auto scene = HelloWorld::createScene();
+	//auto director = Director::getInstance();
+	//return director->replaceScene(scene);
 
+	SceneManager::Instance()->runScene("GoodBye");
 
 
 
