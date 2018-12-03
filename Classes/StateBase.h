@@ -1,23 +1,31 @@
-#pragma once
 
 #ifndef _STATEBASE_H
 #define _STATEBASE_H
 
-using std::string;
+#include "Enemy.h"
 
 class StateBase
 {
+
 public:
+
+	StateBase(const String &stateID);
+	~StateBase();
+
+
 	virtual void Enter() = 0;
 
 	virtual void Update() = 0;
 
 	virtual void Exit() = 0;
 
-	const string& GetStateID();
+	const String& GetStateID()
+	{
+		return StateId;
+	};
 
-public:
-	string StateId;
+	String StateId;
+
 };
 
 

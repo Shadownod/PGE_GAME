@@ -80,29 +80,7 @@ bool HelloWorld::init()
 
 	m_gameBoard = new CBoardGenerator(10, 7, 7, 4, 100, 100);
 	m_gameBoard->GenerateBoard(nodeItems);
-	//auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-	//
-	//int howmany = playingSize.width / sprite->getContentSize().width;
-	//int SpawnX = 0;
-	//int SpawnY = playingSize.height / 10;
-	//
-	//for (int i = 0; i < howmany; i++)
-	//{
-	//	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-	//	sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
-	//	sprite->setPosition(SpawnX + i * sprite->getContentSize().width, SpawnY);
-	//
-	//	//Create a static PhysicsBody
-	//	auto physicsBody = PhysicsBody::createBox(
-	//		cocos2d::Size(sprite->getContentSize().width, sprite->getContentSize().height),
-	//		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	//	physicsBody->setDynamic(false);
-	//	physicsBody->setCategoryBitmask(0x02);
-	//	physicsBody->setCollisionBitmask(0x01);
-	//	sprite->addComponent(physicsBody);
-	//
-	//	nodeItems->addChild(sprite, 0);
-	//}
+
 	this->addChild(nodeItems, 1);
 
 #pragma endregion
@@ -111,19 +89,14 @@ bool HelloWorld::init()
 	auto spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 	
-	mainSprite = Sprite::create("Blue_Front1.png");
-	mainSprite->setAnchorPoint(Vec2::ZERO);
-	mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
-	mainSprite->setName("mainSprite");
-	
-	auto mainSpritePhysicsBody = PhysicsBody::createBox(
-		cocos2d::Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	mainSpritePhysicsBody->setCategoryBitmask(0x01);
-	mainSpritePhysicsBody->setCollisionBitmask(0x02);
-	mainSprite->addComponent(mainSpritePhysicsBody);
+	//mainSprite = Sprite::create("Blue_Front1.png");
+	//mainSprite->setAnchorPoint(Vec2::ZERO);
+	//mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
+	//mainSprite->setName("mainSprite");
+	player = new Player;
+	player->Init(spriteNode,Vec2(0,0));
 
-	spriteNode->addChild(mainSprite, 1);
+
 	this->addChild(spriteNode, 1);
 
 	////autoMoving the sprite
@@ -158,69 +131,13 @@ bool HelloWorld::init()
 	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
-	/*****************************
-	* Animation *
-	******************************/
-	Vector<SpriteFrame*> animRightFrame;
-	animRightFrame.reserve(4);
-	animRightFrame.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
-	animRightFrame.pushBack(SpriteFrame::create("Blue_Right3.png", Rect(0, 0, 65, 81)));
-	animRightFrame.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
-	animRightFrame.pushBack(SpriteFrame::create("Blue_Right2.png", Rect(0, 0, 65, 81)));
 
-	Vector<SpriteFrame*> animLeftFrame;
-	animLeftFrame.reserve(4);
-	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
-	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left3.png", Rect(0, 0, 65, 81)));
-	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
-	animLeftFrame.pushBack(SpriteFrame::create("Blue_Left2.png", Rect(0, 0, 65, 81)));
 
-	Vector<SpriteFrame*> animUpFrame;
-	animUpFrame.reserve(4);
-	animUpFrame.pushBack(SpriteFrame::create("Blue_Back1.png", Rect(0, 0, 65, 81)));
-	animUpFrame.pushBack(SpriteFrame::create("Blue_Back3.png", Rect(0, 0, 65, 81)));
-	animUpFrame.pushBack(SpriteFrame::create("Blue_Back1.png", Rect(0, 0, 65, 81)));
-	animUpFrame.pushBack(SpriteFrame::create("Blue_Back2.png", Rect(0, 0, 65, 81)));
-	
-	Vector<SpriteFrame*> animDownFrames;
-	animDownFrames.reserve(4);
-	animDownFrames.pushBack(SpriteFrame::create("Blue_Front1.png", Rect(0, 0, 65, 81)));
-	animDownFrames.pushBack(SpriteFrame::create("Blue_Front3.png", Rect(0, 0, 65, 81)));
-	animDownFrames.pushBack(SpriteFrame::create("Blue_Front1.png", Rect(0, 0, 65, 81)));
-	animDownFrames.pushBack(SpriteFrame::create("Blue_Front2.png", Rect(0, 0, 65, 81)));
-
-	//create animation out of the frames
-	Animation* playerAnimation = Animation::createWithSpriteFrames(animRightFrame, 0.5f);
-	animateRight = Animate::create(playerAnimation);
-	animateRight->retain();
-
-	playerAnimation = Animation::createWithSpriteFrames(animLeftFrame, 0.5f);
-	animateLeft = Animate::create(playerAnimation);
-	animateLeft->retain();
-
-	playerAnimation = Animation::createWithSpriteFrames(animUpFrame, 0.5f);
-	animateUp = Animate::create(playerAnimation);
-	animateUp->retain();
-
-	playerAnimation = Animation::createWithSpriteFrames(animDownFrames, 0.5f);
-	animateDown = Animate::create(playerAnimation);
-	animateDown->retain();
 
 	//Tell system that this "node"(scene) has a update
 	this->scheduleUpdate();
 
-	/*****************************
-	//Class member initializer
-	******************************/
-	m_moveLeft	= false;
-	m_moveRight = false;
-	m_moveUp	= false;
-	m_moveDown	= false;
 
-	m_animRight = false;
-	m_animLeft	= false;
-	m_animUp	= false;
-	m_animDown	= false;
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -291,22 +208,8 @@ bool HelloWorld::init()
 
 void HelloWorld::update(float delta)
 {
-	if (m_moveRight)
-	{
-	}
-
-	if (m_moveLeft)
-	{
-	}
-
-	if (m_moveUp)
-	{
-	}
-
-	if (m_moveDown)
-	{
-	}
-
+	auto camera = Camera::getDefaultCamera();
+	camera->setPosition(player->GetSprite()->getPosition());
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
@@ -328,124 +231,12 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-	{
-		if (!m_moveRight)
-		{
-			m_moveRight = true;
-
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-			curPhysics->setVelocity(Vec2(100.f, 0.f));
-		}
-		if (!m_animRight)
-		{
-			m_animRight = true;		
-
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			curSprite->runAction(RepeatForever::create(animateRight)->clone());
-		}
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-	{
-		if (!m_moveLeft)
-		{
-			m_moveLeft = true;
-
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-			curPhysics->setVelocity(Vec2(-100.f, 0.f));
-		}
-		if (!m_animLeft)
-		{
-			m_animLeft = true;
-			
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			curSprite->runAction(RepeatForever::create(animateLeft)->clone());
-		}
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
-	{
-		if (!m_moveUp)
-		{
-			m_moveUp = true;
-
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-			curPhysics->setVelocity(Vec2(0.f, 100.f));
-		}
-		if (!m_animUp)
-		{
-			m_animUp = true;
-
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			curSprite->runAction(RepeatForever::create(animateUp)->clone());
-		}
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
-	{
-		if (!m_moveDown)
-		{
-			m_moveDown = true;
-			
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-			curPhysics->setVelocity(Vec2(0.f, -100.f));
-		}
-		if (!m_animDown)
-		{
-			m_animDown = true;
-			
-			auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-			curSprite->runAction(RepeatForever::create(animateDown)->clone());
-		}
-	}
-
+	player->onKeyPressed(keyCode, event);
 }
 
 void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event * event)
 {
-	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-		curPhysics->setVelocity(Vec2::ZERO);
-		curSprite->stopAllActions();
-
-		m_moveRight = false;
-		m_animRight = false;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-		curPhysics->setVelocity(Vec2::ZERO);
-		curSprite->stopAllActions();
-
-		m_moveLeft = false;
-		m_animLeft = false;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
-	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-		curPhysics->setVelocity(Vec2::ZERO);
-		curSprite->stopAllActions();
-
-		m_moveUp = false;
-		m_animUp = false;
-	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
-	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		PhysicsBody* curPhysics = curSprite->getPhysicsBody();
-		curPhysics->setVelocity(Vec2::ZERO);
-		curSprite->stopAllActions();
-
-		m_moveDown = false;
-		m_animDown = false;
-	}
-
+	player->onKeyRelease(keyCode, event);
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -454,35 +245,33 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
 {
+	player->onMouseDown(event);
 }
 
 void HelloWorld::onMouseUp(cocos2d::Event * event)
 {
 	EventMouse* e = (EventMouse*)event;
-	if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
-	{
-		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		//auto stopEvent = curSprite->getActionByTag(1337);
-		curSprite->stopAllActions();
-
-		curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveTo::create(5.f, Vec2(e->getCursorX(), e->getCursorY()));
-		//moveEvent->setTag(1337);
-		
-		//lamda function to stop all action
-		auto callbackStop = CallFunc::create([]()
-		{
-			auto scene = Director::getInstance()->getRunningScene();
-			HelloWorld* helscene = (HelloWorld*)scene;
-			auto curSprite = helscene->getPlayerSprite();
-			curSprite->stopAllActions();
-		});
-
-		curSprite->runAction(RepeatForever::create(animateUp));
-		auto sq = Sequence::create(moveEvent, callbackStop, animateDown, nullptr);
-		curSprite->runAction(sq);
-
-	}
+	//if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+	//{
+	//	auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+	//	//auto stopEvent = curSprite->getActionByTag(1337);
+	//	curSprite->stopAllActions();
+	//	curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+	//	auto moveEvent = MoveTo::create(5.f, Vec2(e->getCursorX(), e->getCursorY()));
+	//	//moveEvent->setTag(1337);
+	//	
+	//	//lamda function to stop all action
+	//	auto callbackStop = CallFunc::create([]()
+	//	{
+	//		auto scene = Director::getInstance()->getRunningScene();
+	//		HelloWorld* helscene = (HelloWorld*)scene;
+	//		auto curSprite = helscene->getPlayerSprite();
+	//		curSprite->stopAllActions();
+	//	});
+	//	curSprite->runAction(RepeatForever::create(animateUp));
+	//	auto sq = Sequence::create(moveEvent, callbackStop, animateDown, nullptr);
+	//	curSprite->runAction(sq);
+	//}
 
 }
 
