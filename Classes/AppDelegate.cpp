@@ -23,8 +23,7 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-#include "LoadScreen.h"
+#include "SceneManager.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -118,11 +117,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // create a scene. it's an autorelease object
-    auto scene = LoadScreen::createScene();
+    //// create a scene. it's an autorelease object
+    //auto scene = LoadScreen::createScene();
 
-    // run
-    director->runWithScene(scene);
+    //// run
+    //director->runWithScene(scene);
+	SceneManager::Instance()->runScene("LoadScreen");
 
     return true;
 }
