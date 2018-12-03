@@ -195,6 +195,12 @@ void GoodBye::menuCloseCallback(Ref* pSender)
 
 void GoodBye::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
+	if (keyCode == EventKeyboard::KeyCode::KEY_SPACE)
+	{
+		SceneManager::Instance()->runScene("HelloWorld");
+	}
+
+
 	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
 		auto curSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
