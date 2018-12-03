@@ -28,9 +28,6 @@ public:
 
 	void SetNextState(string _nextid);
 
-	StateBase* GetCurrentState()
-	{
-		return m_curr;
-	}
+	StateBase* GetCurrentState();
 
 };

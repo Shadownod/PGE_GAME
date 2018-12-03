@@ -11,8 +11,8 @@ class Player;
 class Enemy
 {
 public:
-	Enemy() {}
-	~Enemy() {}
+	Enemy();
+	~Enemy();
 
 	void Init(Node* _enemyNode, Vec2 StartPos);
 	void Update(float dt);
@@ -21,20 +21,14 @@ public:
 	void SetAtkValue(float newAtk);
 	void SetMana(float newMana);
 	void SetHealth(float newHealth);
-	void SetAlert(bool status)
-	{
-		alerted = status;
-	}
+	void SetAlert(bool status);
 
 	float GetMovementSpd();
 	float GetAtkValue();
 	float GetMana();
 	float GetHealth();
 	Sprite* GetSprite();
-	bool GetAlert()
-	{
-		return alerted;
-	}
+	bool GetAlert();
 
 	void AddMovementSpd(float addSpd);
 	void AddAtkValue(float addAtk);
@@ -48,10 +42,7 @@ public:
 
 	void CheckDistance(Player* _playerobj);
 
-	StateMachine* GetStateMachine()
-	{
-		return statemachine;
-	}
+	StateMachine* GetStateMachine();
 
 private:
 	float movementSpd;

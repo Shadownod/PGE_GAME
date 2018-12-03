@@ -33,6 +33,9 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 	playerPhysics = playerSprite->getPhysicsBody();
 	playerPhysics->setGravityEnable(false);
 	playerPhysics->setRotationEnable(false);
+	playerPhysics->setCategoryBitmask(0x01);
+	playerPhysics->setCollisionBitmask(0x02);	//Collide with wall
+
 #pragma endregion
 
 #pragma region Animation frames
@@ -137,25 +140,43 @@ void Player::onMouseDown(Event * event)
 		auto sprite = Sprite::create("Default_Projectile.png");
 		sprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 		sprite->setPosition(playerSprite->getPosition());
-		playerNode->addChild(sprite);
 
+		PhysicsBody* bulletBody;
+		
+
+		playerNode->addChild(sprite);
 		switch (playerDir)
 		{
 		case UP:
+			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().height, sprite->getContentSize().width), PhysicsMaterial(0.001f, 0.0f, 0.0f));
 			sprite->setRotation(90);
+			bulletBody->setVelocity(Vec2(0, 10));
 			break;
 		case DOWN:
+			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().height, sprite->getContentSize().width), PhysicsMaterial(0.001f, 0.0f, 0.0f));
 			sprite->setRotation(-90);
+			bulletBody->setVelocity(Vec2(0, -10));
 			break;
 		case LEFT:
+			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().width, sprite->getContentSize().height), PhysicsMaterial(0.001f, 0.0f, 0.0f));
 			sprite->setRotation(0);
+			bulletBody->setVelocity(Vec2(-10, 0));
 			break;
 		case RIGHT:
+			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().width, sprite->getContentSize().height), PhysicsMaterial(0.001f, 0.0f, 0.0f));
 			sprite->setRotation(180);
+			bulletBody->setVelocity(Vec2(10, 0));
 			break;
 		default:
 			break;
 		}
+
+		bulletBody->setGravityEnable(false);
+		bulletBody->setRotationEnable(false);
+		bulletBody->setCategoryBitmask(0x03);
+		bulletBody->setCollisionBitmask(0x02);	//Collide with wall
+		bulletBody->setGroup(-0x01);	//Prevent self Collision
+		sprite->addComponent(bulletBody);
 
 
 		////cursor to player
