@@ -75,7 +75,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 		playerSprite->stopAllActions();
 		xVelocity = -100.0f;
 		playerPhysics->setVelocity(Vec2(xVelocity,yVelocity));
-
+		SetDir(MovementDir::LEFT);
 		playerSprite->runAction(RepeatForever::create(moveLeftAnim));
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
@@ -83,7 +83,10 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 		playerSprite->stopAllActions();
 		xVelocity = 100.0f;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
+		SetDir(MovementDir::RIGHT);
+
 		playerSprite->runAction(RepeatForever::create(moveRightAnim));
+
 	}
 
 	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
@@ -91,12 +94,15 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 		playerSprite->stopAllActions();
 		yVelocity = 100.0f;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
+		SetDir(MovementDir::UP);
+
 	}
-	if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+	else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
 	{
 		playerSprite->stopAllActions();
 		yVelocity = 100.0f;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
+		SetDir(MovementDir::DOWN);
 	}
 
 }
@@ -128,10 +134,29 @@ void Player::onMouseDown(Event * event)
 	{
 
 		//Spawn projectile or something
-		//auto sprite = Sprite::create("Default_Projectile.png");
-		//sprite->setAnchorPoint(Vec2::ZERO);
-		//sprite->setPosition(playerSprite->getPosition());
-		//playerNode->addChild(sprite);
+		auto sprite = Sprite::create("Default_Projectile.png");
+		sprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+		sprite->setPosition(playerSprite->getPosition());
+		playerNode->addChild(sprite);
+
+		switch (playerDir)
+		{
+		case UP:
+			sprite->setRotation(90);
+			break;
+		case DOWN:
+			sprite->setRotation(-90);
+			break;
+		case LEFT:
+			sprite->setRotation(0);
+			break;
+		case RIGHT:
+			sprite->setRotation(180);
+			break;
+		default:
+			break;
+		}
+
 
 		////cursor to player
 		//Vec2 dir = e->getLocation() - playerSprite->getPosition();
@@ -186,6 +211,11 @@ void Player::SetHealth(float newHealth)
 	health = newHealth;
 }
 
+void Player::SetDir(MovementDir dir)
+{
+	playerDir = dir;
+}
+
 float Player::GetMovementSpd()
 {
 	return movementSpd;
@@ -209,6 +239,11 @@ float Player::GetHealth()
 Sprite * Player::GetSprite()
 {
 	return playerSprite;
+}
+
+MovementDir Player::GetDir()
+{
+	return playerDir;
 }
 
 void Player::AddMovementSpd(float addSpd)

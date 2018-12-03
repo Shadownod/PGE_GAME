@@ -3,6 +3,14 @@
 #include "cocos2d.h"
 USING_NS_CC;
 
+enum MovementDir
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+};
+
 class Player
 {
 public:
@@ -20,12 +28,14 @@ public:
 	void SetAtkValue(float newAtk);
 	void SetMana(float newMana);
 	void SetHealth(float newHealth);
+	void SetDir(MovementDir dir);
 
 	float GetMovementSpd();
 	float GetAtkValue();
 	float GetMana();
 	float GetHealth();
 	Sprite* GetSprite();
+	MovementDir GetDir();
 
 	void AddMovementSpd(float addSpd);
 	void AddAtkValue(float addAtk);
@@ -54,6 +64,7 @@ private:
 	Animate* moveLeftAnim;
 	Animate* moveRightAnim;
 	Node* playerNode;
+	MovementDir playerDir;
 };
 
 float getCurrentAngle(Node* node);
