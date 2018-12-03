@@ -26,6 +26,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "Player.h"
 
 class CBoardGenerator;
 
@@ -55,30 +56,8 @@ public:
 	// Physics listener
 	bool onContactBegin(cocos2d::PhysicsContact& contact);
 
-	cocos2d::Sprite* getPlayerSprite()
-	{	return mainSprite;	};
-
 private:
-	bool m_moveRight;
-	bool m_moveLeft;
-	bool m_moveUp;
-	bool m_moveDown;
-
-	bool m_animRight;
-	bool m_animLeft;
-	bool m_animUp;
-	bool m_animDown;
-
-	bool m_moveFree;
-
-	cocos2d::Sprite* mainSprite;
-
-	//Animation
-	cocos2d::Animate* animateDown;
-	cocos2d::Animate* animateRight;
-	cocos2d::Animate* animateLeft;
-	cocos2d::Animate* animateUp;
-
+	Player* player;
 
 	//Gameboard
 	CBoardGenerator* m_gameBoard;
