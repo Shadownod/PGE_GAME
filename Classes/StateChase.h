@@ -3,13 +3,14 @@
 
 #include "StateBase.h"
 #include "cocos2d.h"
-
+class Enemy;
 class StateChase : public StateBase
 {
 	Enemy* enemyobj;
 
 public:
-	StateChase(const String &stateID, Enemy* enemyobj);
+	StateChase();
+	StateChase(const string &stateID, Enemy* enemyobj);
 	~StateChase();
 
 	void Enter();

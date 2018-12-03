@@ -1,6 +1,14 @@
 #include "StateBase.h"
 
-StateBase::StateBase(const String & _stateID) : StateId(_stateID)
+StateBase::StateBase()
 {
+}
 
+StateBase::StateBase(const string & _stateID)
+{
+	StateId = _stateID;
+}
+
+StateBase::~StateBase()
+{
 }

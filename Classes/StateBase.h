@@ -1,15 +1,17 @@
-
 #ifndef _STATEBASE_H
 #define _STATEBASE_H
 
-#include "Enemy.h"
+#include <string>
+using std::string;
+
+
 
 class StateBase
 {
 
 public:
-
-	StateBase(const String &stateID);
+	StateBase();
+	StateBase(const string &stateID);
 	~StateBase();
 
 
@@ -19,15 +21,13 @@ public:
 
 	virtual void Exit() = 0;
 
-	const String& GetStateID()
+	const string& GetStateID()
 	{
 		return StateId;
 	};
 
-	String StateId;
+	string StateId;
 
 };
-
-
 
 #endif

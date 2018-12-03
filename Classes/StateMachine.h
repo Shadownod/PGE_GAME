@@ -2,14 +2,21 @@
 
 #include "StateBase.h"
 #include "cocos2d.h"
+#include <string>
+#include <map>
+#include <vector>
+using std::map;
+using std::vector;
 USING_NS_CC;
-
+using std::string;
 class StateMachine
 {
-	StateBase* m_curr;
-	StateBase* m_next;
-	Map<String, StateBase*>m_stateMap;
-	
+
+private:
+	StateBase *m_curr;
+	StateBase *m_next;
+	//map<string, StateBase*>m_stateMap;
+	vector<StateBase*> m_stateVec;
 
 public:
 	StateMachine();
@@ -19,7 +26,7 @@ public:
 
 	void AddState(StateBase* _newstate);
 
-	void SetNextState(String _nextid);
+	void SetNextState(string _nextid);
 
 	StateBase* GetCurrentState()
 	{

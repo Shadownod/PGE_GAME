@@ -82,7 +82,6 @@ bool HelloWorld::init()
 	m_gameBoard->GenerateBoard(nodeItems);
 
 	this->addChild(nodeItems, 1);
-
 #pragma endregion
 
 	//Movable obj
@@ -95,6 +94,8 @@ bool HelloWorld::init()
 	//mainSprite->setName("mainSprite");
 	player = new Player;
 	player->Init(spriteNode,Vec2(0,0));
+
+	m_gameBoard->SpawnPlayer(player);
 
 
 	this->addChild(spriteNode, 1);

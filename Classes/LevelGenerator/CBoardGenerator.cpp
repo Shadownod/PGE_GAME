@@ -4,6 +4,7 @@
 #include "CFloor.h";
 #include "CRoom.h";
 #include "CCorridor.h";
+#include "Player.h"
 
 CBoardGenerator::CBoardGenerator(int _numRooms, int _roomWidth, int _roomHeight, int _corridorLength, int _boardColum, int _boardRow)
 	: rooms(_numRooms)
@@ -125,7 +126,8 @@ void CBoardGenerator::SpawnPlayer(Player* _player, int _whichRoom)
 {
 	cocos2d::Vec2 roomCenterPoint = CDungeon::getInstance()->floors[CDungeon::getInstance()->currentFloor - 1]->GetRooms()[_whichRoom]->CenterPoint();
 	//_player->GetSprite ? ->GetPosition ? = the line below
-	Vec2(roomCenterPoint.x * wallSprite->getContentSize().width, roomCenterPoint.y * wallSprite->getContentSize().height);
+	_player->GetSprite()->setPosition(
+	Vec2(roomCenterPoint.x * wallSprite->getContentSize().width, roomCenterPoint.y * wallSprite->getContentSize().height));
 	
 }
 

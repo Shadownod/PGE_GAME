@@ -1,8 +1,16 @@
 #include "StateIdle.h"
+#include "Enemy.h"
+StateIdle::StateIdle()
+{
+}
 
-StateIdle::StateIdle(const String & _stateID, Enemy * _enemyobj)
+StateIdle::StateIdle(const string & _stateID, Enemy * _enemyobj)
 	: StateBase(_stateID),
 	enemyobj(_enemyobj)
+{
+}
+
+StateIdle::~StateIdle()
 {
 }
 

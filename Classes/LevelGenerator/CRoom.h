@@ -1,6 +1,7 @@
 #ifndef CROOM_H
 #define CROOM_H
 
+#include "cocos2d.h"
 #include <vector>
 using std::vector;
 

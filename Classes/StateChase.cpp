@@ -1,8 +1,16 @@
 #include "StateChase.h"
+#include "Enemy.h"
+StateChase::StateChase()
+{
+}
 
-StateChase::StateChase(const String & _stateID, Enemy * _enemyobj)
+StateChase::StateChase(const string & _stateID, Enemy * _enemyobj)
 	: StateBase(_stateID),
 	enemyobj(_enemyobj)
+{
+}
+
+StateChase::~StateChase()
 {
 }
 

@@ -17,6 +17,7 @@ public:
 	~CBoardGenerator();
 
 	void GenerateBoard(cocos2d::Node* _sceneFloorData);
+	void SpawnPlayer(Player* _player, int _whichRoom = 0);
 
 private:
 	void CreateNewFloor();
@@ -24,7 +25,7 @@ private:
 	void InstantiateTiles(cocos2d::Node* _sceneFloorData, vector<vector<TileType>> _tiles);
 	void InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoord, float yCoord);
 
-	void SpawnPlayer(Player* _player, int _whichRoom = 0);
+
 
 	int gridSize;
 
