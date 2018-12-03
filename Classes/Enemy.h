@@ -2,16 +2,17 @@
 
 #include "cocos2d.h"
 #include "StateMachine.h"
-#include "Player.h"
 #include "StateChase.h"
 #include "StateIdle.h"
 USING_NS_CC;
 
+class Player;
+
 class Enemy
 {
 public:
-	Enemy();
-	~Enemy();
+	Enemy() {}
+	~Enemy() {}
 
 	void Init(Node* _enemyNode, Vec2 StartPos);
 	void Update(float dt);
@@ -20,14 +21,20 @@ public:
 	void SetAtkValue(float newAtk);
 	void SetMana(float newMana);
 	void SetHealth(float newHealth);
-	void SetAlert(bool status);
+	void SetAlert(bool status)
+	{
+		alerted = status;
+	}
 
 	float GetMovementSpd();
 	float GetAtkValue();
 	float GetMana();
 	float GetHealth();
 	Sprite* GetSprite();
-	bool GetAlert();
+	bool GetAlert()
+	{
+		return alerted;
+	}
 
 	void AddMovementSpd(float addSpd);
 	void AddAtkValue(float addAtk);
@@ -41,7 +48,10 @@ public:
 
 	void CheckDistance(Player* _playerobj);
 
-	StateMachine* GetStateMachine();
+	StateMachine* GetStateMachine()
+	{
+		return statemachine;
+	}
 
 private:
 	float movementSpd;

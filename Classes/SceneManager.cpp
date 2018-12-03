@@ -21,8 +21,6 @@ void SceneManager::RegisterScene(string SceneName, cocos2d::Scene * Scene)
 {
 	if (SceneExist(SceneName))
 		return;
-
-	Scene->init();
 	SceneMap.insert(SceneName, Scene);
 }
 

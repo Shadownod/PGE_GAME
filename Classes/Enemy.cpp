@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Player.h"
 
 void Enemy::Init(Node * _enemyNode, Vec2 StartPos)
 {
@@ -87,10 +88,10 @@ void Enemy::AddAtkValue(float addAtk)
 	atkValue += addAtk;
 }
 
-void Enemy::AddAtkValue(float addAtk)
-{
-	atkValue += addAtk;
-}
+//void Enemy::AddAtkValue(float addAtk)
+//{
+//	atkValue += addAtk;
+//}
 
 void Enemy::AddMana(float addMana)
 {
@@ -120,4 +121,11 @@ void Enemy::ReduceMana(float reduceMana)
 void Enemy::ReduceHealth(float reduceHealth)
 {
 	health -= reduceHealth;
+}
+
+void Enemy::CheckDistance(Player * _playerobj)
+{
+	float dist = (_playerobj->GetSprite()->getPosition() - this->GetSprite()->getPosition()).length();
+	if (dist <= 5)
+		alerted = true;
 }

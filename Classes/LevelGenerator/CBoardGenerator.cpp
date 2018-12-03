@@ -106,7 +106,7 @@ USING_NS_CC;
 
 void CBoardGenerator::InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoord, float yCoord)
 {
-	auto sprite = wallSprite;
+	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
 	sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
 	sprite->setPosition(xCoord * sprite->getContentSize().width, yCoord * sprite->getContentSize().height);
 

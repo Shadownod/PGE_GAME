@@ -62,30 +62,30 @@ bool GoodBye::init()
 	// "auto" automatically assigns the variable type when the variable is initialised.
 
 	//Floor Render
-	auto nodeItems = Node::create();
-	nodeItems->setName("nodeItems");
-	nodeItems->setPosition(0, -50); // move the container together with all the items in it
+	//auto nodeItems = Node::create();
+	//nodeItems->setName("nodeItems");
+	//nodeItems->setPosition(0, -50); // move the container together with all the items in it
 
-	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
+	//auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
 
-	int howmany = playingSize.width / sprite->getContentSize().width;
-	int SpawnX = 0;
-	int SpawnY = playingSize.height / 2;
+	//int howmany = playingSize.width / sprite->getContentSize().width;
+	//int SpawnX = 0;
+	//int SpawnY = playingSize.height / 2;
 
-	for (int i = 0; i < howmany; i++)
-	{
-		auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-		sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
-		sprite->setPosition(SpawnX + i * sprite->getContentSize().width, SpawnY);
-		nodeItems->addChild(sprite, 0);
-	}
-	this->addChild(nodeItems, 1);
+	//for (int i = 0; i < howmany; i++)
+	//{
+	//	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
+	//	sprite->setAnchorPoint(Vec2::ZERO); // Vec2::ZERO == Vec2(0,0)
+	//	sprite->setPosition(SpawnX + i * sprite->getContentSize().width, SpawnY);
+	//	nodeItems->addChild(sprite, 0);
+	//}
+	//this->addChild(nodeItems, 1);
 
 	//Movable obj
 	auto spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 
-	auto mainSprite = Sprite::create("Blue_Front1.png");
+	auto mainSprite = Sprite::create("HelloWorld.png");
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
 	mainSprite->setName("mainSprite");
