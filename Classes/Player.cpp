@@ -1,5 +1,5 @@
 #include "Player.h"
-USING_NS_CC_MATH;
+#include "Projectile.h"
 
 Player::Player()
 {
@@ -15,6 +15,7 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 	SetMana(100.f);
 	SetMovementSpd(50.f);
 	SetAtkValue(10.f);
+	SetDir(MovementDir::LEFT);
 
 	xVelocity = yVelocity = 0.0f;
 
@@ -31,10 +32,13 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 	
 	playerSprite->addComponent(playerBody);
 	playerPhysics = playerSprite->getPhysicsBody();
+	playerPhysics->setDynamic(true);
 	playerPhysics->setGravityEnable(false);
 	playerPhysics->setRotationEnable(false);
 	playerPhysics->setCategoryBitmask(0x01);
 	playerPhysics->setCollisionBitmask(0x02);	//Collide with wall
+	playerPhysics->setContactTestBitmask(0x02);
+
 
 #pragma endregion
 
@@ -76,7 +80,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
 		playerSprite->stopAllActions();
-		xVelocity = -100.0f;
+		xVelocity = -movementSpd;
 		playerPhysics->setVelocity(Vec2(xVelocity,yVelocity));
 		SetDir(MovementDir::LEFT);
 		playerSprite->runAction(RepeatForever::create(moveLeftAnim));
@@ -84,7 +88,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
 		playerSprite->stopAllActions();
-		xVelocity = 100.0f;
+		xVelocity = movementSpd;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
 		SetDir(MovementDir::RIGHT);
 
@@ -95,7 +99,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
 	{
 		playerSprite->stopAllActions();
-		yVelocity = 100.0f;
+		yVelocity = movementSpd;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
 		SetDir(MovementDir::UP);
 
@@ -103,7 +107,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
 	{
 		playerSprite->stopAllActions();
-		yVelocity = 100.0f;
+		yVelocity = -movementSpd;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
 		SetDir(MovementDir::DOWN);
 	}
@@ -135,80 +139,42 @@ void Player::onMouseDown(Event * event)
 
 	if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
 	{
-
-		//Spawn projectile or something
-		auto sprite = Sprite::create("Default_Projectile.png");
-		sprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
-		sprite->setPosition(playerSprite->getPosition());
-
-		PhysicsBody* bulletBody;
-		
-
-		playerNode->addChild(sprite);
-		switch (playerDir)
+		if (ProjList.size() < 20)
 		{
-		case UP:
-			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().height, sprite->getContentSize().width), PhysicsMaterial(0.001f, 0.0f, 0.0f));
-			sprite->setRotation(90);
-			bulletBody->setVelocity(Vec2(0, 10));
-			break;
-		case DOWN:
-			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().height, sprite->getContentSize().width), PhysicsMaterial(0.001f, 0.0f, 0.0f));
-			sprite->setRotation(-90);
-			bulletBody->setVelocity(Vec2(0, -10));
-			break;
-		case LEFT:
-			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().width, sprite->getContentSize().height), PhysicsMaterial(0.001f, 0.0f, 0.0f));
-			sprite->setRotation(0);
-			bulletBody->setVelocity(Vec2(-10, 0));
-			break;
-		case RIGHT:
-			bulletBody = PhysicsBody::createBox(Size(sprite->getContentSize().width, sprite->getContentSize().height), PhysicsMaterial(0.001f, 0.0f, 0.0f));
-			sprite->setRotation(180);
-			bulletBody->setVelocity(Vec2(10, 0));
-			break;
-		default:
-			break;
+			//Spawn projectile or something
+			Projectile* bullet = new Projectile(playerDir, playerSprite->getPosition(), playerNode);
+			ProjList.push_back(bullet);
 		}
-
-		bulletBody->setGravityEnable(false);
-		bulletBody->setRotationEnable(false);
-		bulletBody->setCategoryBitmask(0x03);
-		bulletBody->setCollisionBitmask(0x02);	//Collide with wall
-		bulletBody->setGroup(-0x01);	//Prevent self Collision
-		sprite->addComponent(bulletBody);
-
-
-		////cursor to player
-		//Vec2 dir = e->getLocation() - playerSprite->getPosition();
-		////dir.normalize();
-		//float rotation = CC_RADIANS_TO_DEGREES(atan2f(dir.y,dir.x));
-	 
-		//cocos2d::log("Rotation: %f", rotation);
-
-		////TRY
-		//playerNode->addChild(sprite);
-
-		//auto spriteWorldSpace = sprite->getParent()->convertToWorldSpace(sprite->getPosition());
-
-		//auto angle = atan2(e->getLocation().y - spriteWorldSpace.y, e->getLocation().x - spriteWorldSpace.y);
-		//sprite->setRotation(CC_RADIANS_TO_DEGREES(-angle) + 90);
-
-		//Try2
-		//sprite->
-		//Vec2 spritePos = sprite->getParent()->convertToNodeSpace(sprite->getPosition());
-		//Vec2 dir = e->getLocation() - sprite->getPosition();
+		else
+		{
+			for (int i = 0; i < ProjList.size(); ++i)
+			{
+				if (!ProjList[i]->GetVisible())
+				{
+				ProjList[i]->ReSpawnBullet(playerDir, playerSprite->getPosition(), playerNode);
+				cocos2d::log("CHECKVISIBLE");
+				}
+			}
+		}
 		
-		//float angle = CC_RADIANS_TO_DEGREES(atan2(dir.y, dir.x));
-		//cocos2d::log("angle: %f + CurX: %f + CurY: %f", angle,e->getLocation().x, e->getLocation().y);
-		//cocos2d::log("Sprite posX: %f posY: %f", sprite->getPosition().x, sprite->getPosition().y);
-		//sprite->setRotation(angle);
-	
-		//sprite->set(rotation);
 	}
 	else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT)
 	{
 		//Do weapon skill stuff here
+	}
+}
+
+bool Player::onContactBegin(cocos2d::PhysicsContact & contact)
+{
+
+	return true;
+}
+
+void Player::CheckProjContact(cocos2d::PhysicsContact & contact)
+{
+	for (int i = 0; i < ProjList.size(); ++i)
+	{
+		ProjList[i]->onContactBegin(contact);
 	}
 }
 
@@ -326,7 +292,6 @@ float getAngleDifference(float angle1, float angle2)
 		diffAngle += 360.0f;
 
 	return diffAngle;
-	
 }
 
 float getAngleBetweenVec(Point vec1, Point vec2)
