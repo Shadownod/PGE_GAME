@@ -212,6 +212,8 @@ void HelloWorld::update(float delta)
 {
 	auto camera = Camera::getDefaultCamera();
 	camera->setPosition(player->GetSprite()->getPosition());
+
+
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
@@ -285,5 +287,8 @@ bool HelloWorld::onContactBegin(cocos2d::PhysicsContact & contact)
 {
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
+	player->CheckProjContact(contact);
+	cocos2d::log("CONTACT");
+	player->onContactBegin(contact);
 	return true;
 }

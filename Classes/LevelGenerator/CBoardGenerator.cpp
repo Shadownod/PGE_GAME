@@ -118,7 +118,9 @@ void CBoardGenerator::InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoo
 	physicsBody->setCategoryBitmask(0x02);	
 	physicsBody->setCollisionBitmask(0x01);	//Collide with player
 	physicsBody->setCollisionBitmask(0x03);	//Collide with bullet
+	physicsBody->setContactTestBitmask(0x03);
 
+	physicsBody->setContactTestBitmask(0x01);
 	sprite->addComponent(physicsBody);
 
 	_sceneFloorData->addChild(sprite, 0);

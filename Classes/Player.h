@@ -1,7 +1,10 @@
 #pragma once
 
 #include "cocos2d.h"
+#include <vector>
 USING_NS_CC;
+
+class Projectile;
 
 enum MovementDir
 {
@@ -23,6 +26,9 @@ public:
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyRelease(EventKeyboard::KeyCode keyCode, Event * event);
 	void onMouseDown(Event* event);
+	bool onContactBegin(cocos2d::PhysicsContact & contact);
+
+	void CheckProjContact(cocos2d::PhysicsContact & contact);
 
 	void SetMovementSpd(float newSpd);
 	void SetAtkValue(float newAtk);
@@ -65,6 +71,8 @@ private:
 	Animate* moveRightAnim;
 	Node* playerNode;
 	MovementDir playerDir;
+
+	std::vector<Projectile*> ProjList;
 };
 
 float getCurrentAngle(Node* node);
