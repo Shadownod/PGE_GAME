@@ -27,6 +27,7 @@
 
 #include "cocos2d.h"
 class Player;
+class Enemy;
 class CBoardGenerator;
 
 class HelloWorld : public cocos2d::Scene
@@ -57,6 +58,7 @@ public:
 
 private:
 	Player* player;
+	Enemy* enemy;
 
 	//Gameboard
 	CBoardGenerator* m_gameBoard;

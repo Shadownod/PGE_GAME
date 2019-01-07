@@ -25,6 +25,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "Player.h"
+#include "Enemy.h"
 
 USING_NS_CC;
 
@@ -100,6 +101,18 @@ bool HelloWorld::init()
 
 
 	this->addChild(spriteNode, 1);
+
+#pragma region
+	auto EnemyNode = Node::create();
+	EnemyNode->setName("EnemyNode");
+	enemy = new Enemy;
+	enemy->Init(EnemyNode, Vec2(0, 0), player);
+
+	m_gameBoard->SpawnEnemies(enemy);
+
+
+	this->addChild(EnemyNode, 1);
+#pragma endregion
 
 	////autoMoving the sprite
 	//int Destination = 1000;
@@ -212,7 +225,8 @@ void HelloWorld::update(float delta)
 {
 	auto camera = Camera::getDefaultCamera();
 	camera->setPosition(player->GetSprite()->getPosition());
-
+	if(enemy->GetSprite()->getPhysicsBody())
+	enemy->GetStateMachine()->Update();
 
 }
 

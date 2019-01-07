@@ -14,7 +14,7 @@ public:
 	Enemy();
 	~Enemy();
 
-	void Init(Node* _enemyNode, Vec2 StartPos);
+	void Init(Node* _enemyNode, Vec2 StartPos, Player* _playerobj);
 	void Update(float dt);
 
 	void SetMovementSpd(float newSpd);
@@ -44,6 +44,8 @@ public:
 
 	StateMachine* GetStateMachine();
 
+	Player* GetPlayer();
+
 private:
 	float movementSpd;
 	float atkValue;
@@ -63,11 +65,7 @@ private:
 	Animate* moveLeftAnim;
 	Animate* moveRightAnim;
 	Node* enemyNode;
+	Player* playerobj;
 };
-
-float getCurrentAngle(Node* node);
-float getAngleDifference(float angle1, float angle2);
-float getAngleBetweenVec(Point vec1, Point vec2);
-void rotateNodeToPoint(Node* node, Point point);
 
 

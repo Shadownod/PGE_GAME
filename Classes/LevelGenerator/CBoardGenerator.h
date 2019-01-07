@@ -9,6 +9,7 @@ using std::vector;
 #include "CDungeonUtilities.h"
 
 class Player;
+class Enemy;
 
 class CBoardGenerator
 {
@@ -18,6 +19,7 @@ public:
 
 	void GenerateBoard(cocos2d::Node* _sceneFloorData);
 	void SpawnPlayer(Player* _player, int _whichRoom = 0);
+	void SpawnEnemies(Enemy* _enemy, int _whichroom = 0);
 
 private:
 	void CreateNewFloor();

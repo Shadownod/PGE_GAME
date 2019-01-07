@@ -4,7 +4,8 @@
 #include "CFloor.h";
 #include "CRoom.h";
 #include "CCorridor.h";
-#include "Player.h"
+#include "Player.h";
+#include "Enemy.h";
 
 CBoardGenerator::CBoardGenerator(int _numRooms, int _roomWidth, int _roomHeight, int _corridorLength, int _boardColum, int _boardRow)
 	: rooms(_numRooms)
@@ -113,11 +114,13 @@ void CBoardGenerator::InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoo
 	//Create a static PhysicsBody
 	auto physicsBody = cocos2d::PhysicsBody::createBox(
 		cocos2d::Size(sprite->getContentSize().width, sprite->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+		PhysicsMaterial(1.0f, 0.0f, 0.0f));
 	physicsBody->setDynamic(false);
 	physicsBody->setCategoryBitmask(0x02);	
 	physicsBody->setCollisionBitmask(0x01);	//Collide with player
 	physicsBody->setCollisionBitmask(0x03);	//Collide with bullet
+	physicsBody->setCollisionBitmask(0x04);	//Collide with AI
+
 	physicsBody->setContactTestBitmask(0x03);
 
 	physicsBody->setContactTestBitmask(0x01);
@@ -133,5 +136,13 @@ void CBoardGenerator::SpawnPlayer(Player* _player, int _whichRoom)
 	_player->GetSprite()->setPosition(
 	Vec2(roomCenterPoint.x * wallSprite->getContentSize().width, roomCenterPoint.y * wallSprite->getContentSize().height));
 	
+}
+
+void CBoardGenerator::SpawnEnemies(Enemy * _enemy, int _whichroom)
+{
+	cocos2d::Vec2 roomCenterPoint = CDungeon::getInstance()->floors[CDungeon::getInstance()->currentFloor - 1]->GetRooms()[_whichroom]->CenterPoint();
+	//_player->GetSprite ? ->GetPosition ? = the line below
+	_enemy->GetSprite()->setPosition(
+		Vec2(roomCenterPoint.x * wallSprite->getContentSize().width, roomCenterPoint.y * wallSprite->getContentSize().height));
 }
 

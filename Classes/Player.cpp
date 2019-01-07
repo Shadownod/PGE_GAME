@@ -13,7 +13,7 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 {
 	SetHealth(100.f);
 	SetMana(100.f);
-	SetMovementSpd(50.f);
+	SetMovementSpd(100.f);
 	SetAtkValue(10.f);
 	SetDir(MovementDir::LEFT);
 
@@ -23,7 +23,9 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 	playerSprite->setAnchorPoint(Vec2::ZERO);
 	playerSprite->setPosition(StartPos.x, StartPos.y);
 	playerSprite->setName("PlayerSprite");
-	
+	playerSprite->setScaleX(0.5f);
+	playerSprite->setScaleY(0.5f);
+
 	playerNode = _playerNode;
 	playerNode->addChild(playerSprite);
 
@@ -37,7 +39,10 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 	playerPhysics->setRotationEnable(false);
 	playerPhysics->setCategoryBitmask(0x01);
 	playerPhysics->setCollisionBitmask(0x02);	//Collide with wall
-	playerPhysics->setContactTestBitmask(0x02);
+	playerPhysics->setCollisionBitmask(0x04);	//Collide with wall
+
+	//playerPhysics->setContactTestBitmask(0x02);
+
 
 
 #pragma endregion
@@ -142,7 +147,7 @@ void Player::onMouseDown(Event * event)
 		if (ProjList.size() < 20)
 		{
 			//Spawn projectile or something
-			Projectile* bullet = new Projectile(playerDir, playerSprite->getPosition(), playerNode);
+			Projectile* bullet = new Projectile(playerDir, playerSprite->getPosition(), playerNode,200.0f);
 			ProjList.push_back(bullet);
 		}
 		else
