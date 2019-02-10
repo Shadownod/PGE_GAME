@@ -1,9 +1,6 @@
 #include "CBoardGenerator.h"
 
 #include "CDungeon.h"
-#include "CFloor.h";
-#include "CRoom.h";
-#include "CCorridor.h";
 #include "Player.h";
 #include "Enemy.h";
 
