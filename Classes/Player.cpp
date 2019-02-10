@@ -9,7 +9,7 @@ Player::~Player()
 {
 }
 
-void Player::Init(Node* _playerNode,Vec2 StartPos)
+void Player::Init(Node* _playerNode, Vec2 StartPos)
 {
 	SetHealth(100.f);
 	SetMana(100.f);
@@ -31,7 +31,7 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 
 #pragma region Physics stuff
 	auto playerBody = PhysicsBody::createBox(Size(playerSprite->getContentSize().width, playerSprite->getContentSize().height), PhysicsMaterial(0.001f, 0.0f, 0.0f));
-	
+
 	playerSprite->addComponent(playerBody);
 	playerPhysics = playerSprite->getPhysicsBody();
 	playerPhysics->setDynamic(true);
@@ -73,7 +73,10 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 
 void Player::Update(float dt)
 {
-
+	for (int i = ProjList.size() - 1; i >= 0 ; --i)
+	{
+		ProjList[i]->Update(dt);
+	}
 	cocos2d::log("PLAYER VELOCITY: %u", playerPhysics->getVelocity().UNIT_X);
 }
 
@@ -83,7 +86,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		playerSprite->stopAllActions();
 		xVelocity = -movementSpd;
-		playerPhysics->setVelocity(Vec2(xVelocity,yVelocity));
+		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
 		SetDir(MovementDir::LEFT);
 		playerSprite->runAction(RepeatForever::create(moveLeftAnim));
 	}
@@ -137,28 +140,29 @@ void Player::onKeyRelease(EventKeyboard::KeyCode keyCode, Event * event)
 void Player::onMouseDown(Event * event)
 {
 
-	EventMouse* e = (EventMouse*)event;	
+	EventMouse* e = (EventMouse*)event;
 
 	if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
 	{
 		if (ProjList.size() < 20)
 		{
 			//Spawn projectile or something
-			Projectile* bullet = new Projectile(playerDir, playerSprite->getPosition(), playerNode,200.0f);
+			Projectile* bullet = new Projectile(playerDir, playerSprite->getPosition(), playerNode, 200.0f);
 			ProjList.push_back(bullet);
 		}
 		else
 		{
 			for (int i = 0; i < ProjList.size(); ++i)
 			{
-				if (!ProjList[i]->GetVisible())
+				if (!ProjList[i]->GetActive())
 				{
-				ProjList[i]->ReSpawnBullet(playerDir, playerSprite->getPosition(), playerNode);
-				cocos2d::log("CHECKVISIBLE");
+					ProjList[i]->ReSpawnBullet(playerDir, playerSprite->getPosition(), 200.0f);
+					cocos2d::log("CHECKVISIBLE");
+					break;
 				}
 			}
 		}
-		
+
 	}
 	else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT)
 	{
@@ -182,7 +186,7 @@ void Player::CheckProjContact(cocos2d::PhysicsContact & contact)
 
 void Player::SetMovementSpd(float newSpd)
 {
-	movementSpd = newSpd;	
+	movementSpd = newSpd;
 }
 
 void Player::SetAtkValue(float newAtk)
@@ -247,7 +251,7 @@ void Player::AddAtkValue(float addAtk)
 
 void Player::AddMana(float addMana)
 {
-	mana += addMana;	
+	mana += addMana;
 }
 
 void Player::AddHealth(float addHeatlh)
