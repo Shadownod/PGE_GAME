@@ -31,7 +31,7 @@ void StateChase::Update()
 	//Put in alert, if alerted, set next state to chase
 	if (!enemyobj->GetAlert())
 	{
-		enemyobj->GetStateMachine()->SetNextState("StateIdle");
+		enemyobj->GetStateMachine()->SetNextState("StateIdle"); 
 	}
 }
 

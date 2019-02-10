@@ -37,11 +37,8 @@ void Player::Init(Node* _playerNode,Vec2 StartPos)
 	playerPhysics->setDynamic(true);
 	playerPhysics->setGravityEnable(false);
 	playerPhysics->setRotationEnable(false);
-	playerPhysics->setCategoryBitmask(0x01);
-	playerPhysics->setCollisionBitmask(0x02);	//Collide with wall
-	playerPhysics->setCollisionBitmask(0x04);	//Collide with wall
 
-	//playerPhysics->setContactTestBitmask(0x02);
+	playerPhysics->setCategoryBitmask(0x01);
 
 
 
@@ -82,7 +79,7 @@ void Player::Update(float dt)
 
 void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
+	if (keyCode == EventKeyboard::KeyCode::KEY_A)
 	{
 		playerSprite->stopAllActions();
 		xVelocity = -movementSpd;
@@ -90,7 +87,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 		SetDir(MovementDir::LEFT);
 		playerSprite->runAction(RepeatForever::create(moveLeftAnim));
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	else if (keyCode == EventKeyboard::KeyCode::KEY_D)
 	{
 		playerSprite->stopAllActions();
 		xVelocity = movementSpd;
@@ -101,7 +98,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 	}
 
-	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
+	if (keyCode == EventKeyboard::KeyCode::KEY_W)
 	{
 		playerSprite->stopAllActions();
 		yVelocity = movementSpd;
@@ -109,7 +106,7 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 		SetDir(MovementDir::UP);
 
 	}
-	else if (keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+	else if (keyCode == EventKeyboard::KeyCode::KEY_S)
 	{
 		playerSprite->stopAllActions();
 		yVelocity = -movementSpd;
@@ -121,14 +118,14 @@ void Player::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 void Player::onKeyRelease(EventKeyboard::KeyCode keyCode, Event * event)
 {
-	if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+	if (keyCode == EventKeyboard::KeyCode::KEY_A || keyCode == EventKeyboard::KeyCode::KEY_D)
 	{
 		playerSprite->stopAllActions();
 		xVelocity = 0.0f;
 		playerPhysics->setVelocity(Vec2(xVelocity, yVelocity));
 	}
 
-	if (keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW || keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+	if (keyCode == EventKeyboard::KeyCode::KEY_W || keyCode == EventKeyboard::KeyCode::KEY_S)
 	{
 		playerSprite->stopAllActions();
 		yVelocity = 0.0f;

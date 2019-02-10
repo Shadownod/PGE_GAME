@@ -25,7 +25,7 @@ void StateIdle::Update()
 	//Put in alert, if alerted, set next state to chase
 	enemyobj->CheckDistance(enemyobj->GetPlayer());
 	if (enemyobj->GetAlert())
-	{
+	{ 
 		enemyobj->GetStateMachine()->SetNextState("StateChase");
 	}
 }

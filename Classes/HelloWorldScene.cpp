@@ -90,10 +90,6 @@ bool HelloWorld::init()
 	auto spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 
-	//mainSprite = Sprite::create("Blue_Front1.png");
-	//mainSprite->setAnchorPoint(Vec2::ZERO);
-	//mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
-	//mainSprite->setName("mainSprite");
 	player = new Player;
 	player->Init(spriteNode, Vec2(0, 0));
 
@@ -142,7 +138,7 @@ bool HelloWorld::init()
 	/*****************************
 	* Contact event Listener *
 	******************************/
-	auto contactListener = EventListenerPhysicsContact::create();
+  	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
@@ -302,7 +298,7 @@ bool HelloWorld::onContactBegin(cocos2d::PhysicsContact & contact)
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
 	player->CheckProjContact(contact);
-	cocos2d::log("CONTACT");
+	cocos2d::log("CONTACT"); 
 	player->onContactBegin(contact);
 	return true;
 }
