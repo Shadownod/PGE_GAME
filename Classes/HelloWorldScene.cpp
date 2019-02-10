@@ -80,7 +80,7 @@ bool HelloWorld::init()
 	nodeItems->setName("gameBoard");
 	nodeItems->setPosition(0, -50); // move the container together with all the items in it
 
-	m_gameBoard = new CBoardGenerator(10, 7, 7, 4, 100, 100);
+	m_gameBoard = new CBoardGenerator(30, 20);
 	m_gameBoard->GenerateBoard(nodeItems);
 
 	this->addChild(nodeItems, 1);
@@ -90,7 +90,7 @@ bool HelloWorld::init()
 	auto spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 
-	player = new Player;
+	player = new Player();
 	player->Init(spriteNode, Vec2(0, 0));
 
 	m_gameBoard->SpawnPlayer(player);
@@ -99,15 +99,15 @@ bool HelloWorld::init()
 	this->addChild(spriteNode, 1);
 
 #pragma region
-	auto EnemyNode = Node::create();
-	EnemyNode->setName("EnemyNode");
-	enemy = new Enemy;
-	enemy->Init(EnemyNode, Vec2(0, 0), player);
+	//auto EnemyNode = Node::create();
+	//EnemyNode->setName("EnemyNode");
+	//enemy = new Enemy;
+	//enemy->Init(EnemyNode, Vec2(0, 0), player);
 
-	m_gameBoard->SpawnEnemies(enemy);
+	//m_gameBoard->SpawnEnemies(enemy);
 
 
-	this->addChild(EnemyNode, 1);
+	//this->addChild(EnemyNode, 1);
 #pragma endregion
 
 	////autoMoving the sprite
@@ -221,8 +221,10 @@ void HelloWorld::update(float delta)
 {
 	auto camera = Camera::getDefaultCamera();
 	camera->setPosition(player->GetSprite()->getPosition());
-	if(enemy->GetSprite()->getPhysicsBody())
-	enemy->GetStateMachine()->Update();
+	
+	player->Update(delta);
+	//if(enemy->GetSprite()->getPhysicsBody())
+	//enemy->GetStateMachine()->Update();
 
 }
 
@@ -243,26 +245,26 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 }
 
-void HelloWorld::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
+void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
 	player->onKeyPressed(keyCode, event);
 }
 
-void HelloWorld::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event * event)
+void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	player->onKeyRelease(keyCode, event);
 }
 
-void HelloWorld::onMouseMove(cocos2d::Event * event)
+void HelloWorld::onMouseMove(Event * event)
 {
 }
 
-void HelloWorld::onMouseDown(cocos2d::Event * event)
+void HelloWorld::onMouseDown(Event * event)
 {
 	player->onMouseDown(event);
 }
 
-void HelloWorld::onMouseUp(cocos2d::Event * event)
+void HelloWorld::onMouseUp(Event * event)
 {
 	EventMouse* e = (EventMouse*)event;
 	//if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
@@ -289,11 +291,11 @@ void HelloWorld::onMouseUp(cocos2d::Event * event)
 
 }
 
-void HelloWorld::onMouseScroll(cocos2d::Event * event)
+void HelloWorld::onMouseScroll(Event * event)
 {
 }
 
-bool HelloWorld::onContactBegin(cocos2d::PhysicsContact & contact)
+bool HelloWorld::onContactBegin(PhysicsContact & contact)
 {
 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();

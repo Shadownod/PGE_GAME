@@ -14,32 +14,19 @@ class Enemy;
 class CBoardGenerator
 {
 public:
-	CBoardGenerator(int _numRooms, int _roomWidth, int _roomHeight, int _corridorLength, int _boardColum, int _boardRow);
+	CBoardGenerator(int _boardWidth, int _boardHeight);
 	~CBoardGenerator();
 
 	void GenerateBoard(cocos2d::Node* _sceneFloorData);
-	void SpawnPlayer(Player* _player, int _whichRoom = 0);
-	void SpawnEnemies(Enemy* _enemy, int _whichroom = 0);
+	void SpawnPlayer(Player* _player, bool _randomPos = false);
+	void SpawnEnemies(Enemy* _enemy, bool _randomPos = true);
 
 private:
-	void CreateNewFloor();
-	bool CreateBoard(cocos2d::Node* _sceneFloorData, int _currentFloor);
-	void InstantiateTiles(cocos2d::Node* _sceneFloorData, vector<vector<TileType>> _tiles);
+	void InstantiateTiles(cocos2d::Node* _sceneFloorData);
 	void InstantiateWall(cocos2d::Node* _sceneFloorData, float xCoord, float yCoord);
 
-
-
-	int gridSize;
-
-	int rooms;
-	int roomWidth;
-	int roomHeight;
-	int corridorLength;
-	int columns;  
-	int rows;     
-
-	int numFloors;
-	int currFloor;
+	int boardWidth;
+	int boardHeight;
 
 	cocos2d::Sprite* wallSprite;
 };

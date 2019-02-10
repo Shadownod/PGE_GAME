@@ -58,7 +58,7 @@ public:
 
 private:
 	Player* player;
-	Enemy* enemy;
+	//Enemy* enemy;
 
 	//Gameboard
 	CBoardGenerator* m_gameBoard;
