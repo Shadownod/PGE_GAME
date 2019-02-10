@@ -24,10 +24,6 @@ Projectile::Projectile(MovementDir _PlayerDir, Vec2 playerPos,Node* spriteNode,f
 	{
 	case UP:
 		bulletBody = PhysicsBody::createBox(Size(projSprite->getContentSize().height, projSprite->getContentSize().width), PhysicsMaterial(0.001f, 0.0f, 0.0f));
-		
-		//bulletBody = PhysicsBody::createCircle(1.0f, PhysicsMaterial(0.001f, 0.0f, 0.0f));
-
-
 		projSprite->setRotation(90);
 		bulletBody->setVelocity(Vec2(0, Speed));
 		break;
@@ -62,12 +58,26 @@ Projectile::Projectile(MovementDir _PlayerDir, Vec2 playerPos,Node* spriteNode,f
 	bulletBody->setDynamic(true);
 	bulletBody->setGravityEnable(false);
 	projSprite->addComponent(bulletBody);
+
+	isActive = true;
 }
 
 Projectile::~Projectile()
 {
 }
 
+void Projectile::Update(float _dt)
+{
+	if (!isActive)
+		return;
+	LifeSpan -= _dt;
+	if (LifeSpan <= 0)
+	{
+		isActive = false;
+		projSprite->setVisible(false);
+	}
+	
+}
 
 bool Projectile::onContactBegin(cocos2d::PhysicsContact & contact)
 {
@@ -78,6 +88,7 @@ bool Projectile::onContactBegin(cocos2d::PhysicsContact & contact)
 	{
 		projSprite->setVisible(false);
 		projSprite->removeComponent(projSprite->getPhysicsBody());
+		isActive = false;
 	}
 	else if (bodyA->getNode() == projSprite && bodyB->getCategoryBitmask() == 0x04 || bodyB->getNode() == projSprite && bodyA->getCategoryBitmask() == 0x04)
 	{
@@ -97,6 +108,7 @@ bool Projectile::onContactBegin(cocos2d::PhysicsContact & contact)
 			enemy->setVisible(false);
 			enemy->removeComponent(enemy->getPhysicsBody());
 		}
+		isActive = false;
 	}
 
 	return true;
@@ -132,15 +144,17 @@ float Projectile::GetLifeSpan()
 	return this->LifeSpan;
 }
 
-bool Projectile::GetVisible()
+bool Projectile::GetActive()
 {
-	if (projSprite->isVisible())
-		return true;
-	return false;
+	return isActive;
 }
 
-void Projectile::ReSpawnBullet(MovementDir _PlayerDir, Vec2 playerPos, Node* spriteNode)
+void Projectile::ReSpawnBullet(MovementDir _PlayerDir, Vec2 playerPos, float _Speed, float _Damage, float _LifeSpan)
 {
+	Speed = _Speed;
+	Damage = _Damage;
+	LifeSpan = _LifeSpan;
+
 	projSprite->setVisible(true);
 	projSprite->setPosition(playerPos);
 
@@ -180,5 +194,8 @@ void Projectile::ReSpawnBullet(MovementDir _PlayerDir, Vec2 playerPos, Node* spr
 	bulletBody->setContactTestBitmask(0x06);
 	bulletBody->setDynamic(true);
 	bulletBody->setGravityEnable(false);
-	projSprite->addComponent(bulletBody);
+	if (projSprite->getPhysicsBody() == nullptr)
+		projSprite->addComponent(bulletBody);
+
+	isActive = true;
 }

@@ -14,6 +14,8 @@ public:
 
 	~Projectile();
 
+	void Update(float _dt);
+
 	bool onContactBegin(cocos2d::PhysicsContact & contact);
 
 
@@ -25,15 +27,17 @@ public:
 	float GetDamage();
 	float GetLifeSpan();
 
-	bool GetVisible();
+	bool GetActive();
 
-	void ReSpawnBullet(MovementDir _PlayerDir, Vec2 playerPos, Node* spriteNode);
+	void ReSpawnBullet(MovementDir _PlayerDir, Vec2 playerPos, float _Speed = 100.0f, float _Damage = 10.0f, float _LifeSpan = 5.0f);
 private:
+	bool isActive;
 	float Speed;
 	float Damage;
 	float LifeSpan;
 	Sprite* projSprite;
 	//PhysicsBody* bulletBody;
+	
 };
 
 
