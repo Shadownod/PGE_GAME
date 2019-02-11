@@ -25,6 +25,7 @@
 #include "GoodBye.h"
 #include "SimpleAudioEngine.h"
 #include "SceneManager.h"
+#include "cocos/ui/CocosGUI.h"
 USING_NS_CC;
 
 Scene* GoodBye::createScene()
@@ -82,16 +83,28 @@ bool GoodBye::init()
 	//this->addChild(nodeItems, 1);
 
 	//Movable obj
-	auto spriteNode = Node::create();
-	spriteNode->setName("spriteNode");
+	auto myLabel = Label::createWithTTF("GAME TITLE", "fonts/Marker Felt.ttf", 30);
+	myLabel->setAnchorPoint(Vec2::ZERO);
+	myLabel->setPosition((playingSize.width - myLabel->getContentSize().width) / 2, playingSize.height - myLabel->getContentSize().height);
+	myLabel->setName("GAMETITLE");
+	this->addChild(myLabel, 1);
 
-	auto mainSprite = Sprite::create("HelloWorld.png");
-	mainSprite->setAnchorPoint(Vec2::ZERO);
-	mainSprite->setPosition(100, (visibleSize.height - playingSize.height));
-	mainSprite->setName("mainSprite");
-
-	spriteNode->addChild(mainSprite, 1);
-	this->addChild(spriteNode, 1);
+	auto startbutton = ui::Button::create("ui/Start.png", "ui/Start_selected.png", "ui/Start_disabled.png");
+	startbutton->addTouchEventListener([&](Ref* sender,
+		ui::Widget::TouchEventType type) {
+		switch (type) {
+		case ui::Widget::TouchEventType::BEGAN:
+			break;
+		case ui::Widget::TouchEventType::ENDED:
+			SceneManager::Instance()->runScene("HelloWorld");
+			/*std::cout << "Button 1 clicked" << std::endl;*/
+			break;
+		default: break;
+		} });
+	startbutton->setAnchorPoint(Vec2::ZERO);
+	startbutton->setPosition(cocos2d::Vec2((playingSize.width - startbutton->getContentSize().width) / 2, (playingSize.height - startbutton->getContentSize().height) / 2 + 100.0f));
+	startbutton->setName("startbutton");
+	this->addChild(startbutton);
 
 	////autoMoving the sprite
 	//int Destination = 1000;

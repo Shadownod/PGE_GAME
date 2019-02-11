@@ -26,6 +26,9 @@
 #include "SimpleAudioEngine.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "cocos/ui/CocosGUI.h"
+#include "SceneManager.h"
+
 
 USING_NS_CC;
 
@@ -85,6 +88,24 @@ bool HelloWorld::init()
 
 	this->addChild(nodeItems, 1);
 #pragma endregion
+	// UI
+	auto exitbutton = ui::Button::create("ui/Exit.png", "ui/Exit_selected.png", "ui/Exit_disabled.png");
+	exitbutton->addTouchEventListener([&](Ref* sender,
+		ui::Widget::TouchEventType type) {
+		switch (type) {
+		case ui::Widget::TouchEventType::BEGAN:
+			break;
+		case ui::Widget::TouchEventType::ENDED:
+			SceneManager::Instance()->runScene("GoodBye");
+			break;
+		default: break;
+		} });
+
+	exitbutton->setScale(0.5f);
+	exitbutton->setPosition(cocos2d::Vec2(0 + exitbutton->getContentSize().width / 2, playingSize.height));
+	exitbutton->setName("exitbutton");
+	this->addChild(exitbutton);
+
 
 	//Movable obj
 	auto spriteNode = Node::create();
